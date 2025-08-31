@@ -1,10 +1,8 @@
 package com.alex.desafio_itau.service;
-
 import com.alex.desafio_itau.dto.TransacaoRequestDTO;
 import com.alex.desafio_itau.dto.TransacaoResponseDTO;
 import com.alex.desafio_itau.entity.TransacaoEntity;
 import org.springframework.stereotype.Service;
-
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,8 +36,8 @@ public class TransacaoService {
 
 
     public void deleteAll() {
-
-    }
+            transacoes.clear();
+        }
 
     public TransacaoResponseDTO getEstatisticas() {
         TransacaoResponseDTO dto = new TransacaoResponseDTO(cont, sum(), avg(), min(), max());
@@ -65,7 +63,7 @@ public class TransacaoService {
     public Long min() {
         Long menor = 0L;
         for (Map.Entry<Integer, TransacaoEntity> par : transacoes.entrySet()) {
-            if (menor <= par.getValue().getValor()) {
+            if (menor > par.getValue().getValor()) {
                 menor = par.getValue().getValor();
             }
         }
@@ -75,7 +73,7 @@ public class TransacaoService {
     public Long max() {
         Long maior = 0L;
         for (Map.Entry<Integer, TransacaoEntity> par : transacoes.entrySet()) {
-            if (maior >= par.getValue().getValor()) {
+            if (maior < par.getValue().getValor()) {
                 maior = par.getValue().getValor();
             }
         }
