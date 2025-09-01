@@ -3,6 +3,8 @@ import com.alex.desafio_itau.dto.TransacaoRequestDTO;
 import com.alex.desafio_itau.dto.TransacaoResponseDTO;
 import com.alex.desafio_itau.entity.TransacaoEntity;
 import org.springframework.stereotype.Service;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,16 +23,15 @@ public class TransacaoService {
         var entity = new TransacaoEntity(dto.getValor(), odt, dto.getId());
         transacoes.put(cont, entity);
         exibirTransacoesConsole();
-        if (!transacoes.containsKey(cont)) {
-            throw new RuntimeException();
-        }
     }
 
     private static void exibirTransacoesConsole() {
         System.out.println("\nTransações realizadas: ");
         transacoes.forEach((id, transacaoEntity) -> {
-            System.out.println("ID: " + id + ", Valor: " + transacaoEntity.getValor() +
-                    ", DataHora: " + transacaoEntity.getDataHora());
+            System.out.printf("ID: %s, Valor: R$ %.2f, DataHora: %s%n",
+                    transacaoEntity.getId(),
+                    transacaoEntity.getValor(),
+                    transacaoEntity.getDataHora());
         });
     }
 
@@ -44,37 +45,42 @@ public class TransacaoService {
         return dto;
     }
 
-    public Long sum() {
-        Long somaTotal = 0L;
+    public static BigDecimal sum() {
+        BigDecimal somaTotal = BigDecimal.ZERO;
         for (Map.Entry<Integer, TransacaoEntity> par : transacoes.entrySet()) {
-            somaTotal += par.getValue().getValor();
+            somaTotal = somaTotal.add(par.getValue().getValor());
         }
         return somaTotal;
     }
 
-    public Long avg() {
-        Long somaTotal = 0L;
-        for (Map.Entry<Integer, TransacaoEntity> par : transacoes.entrySet()) {
-            somaTotal += par.getValue().getValor();
+    public static BigDecimal avg() {
+        if (transacoes.isEmpty()){
+            return BigDecimal.ZERO;
         }
-        return somaTotal / 2;
+        BigDecimal somaTotal = BigDecimal.ZERO;
+        for (Map.Entry<Integer, TransacaoEntity> par : transacoes.entrySet()) {
+            somaTotal = somaTotal.add(par.getValue().getValor());
+        }
+        return somaTotal.divide(BigDecimal.valueOf(transacoes.size()), RoundingMode.HALF_UP);
     }
 
-    public Long min() {
-        Long menor = 0L;
+    public static BigDecimal min() {
+        BigDecimal menor = null;
         for (Map.Entry<Integer, TransacaoEntity> par : transacoes.entrySet()) {
-            if (menor > par.getValue().getValor()) {
-                menor = par.getValue().getValor();
+            BigDecimal valor = par.getValue().getValor();
+            if (menor == null || valor.compareTo(menor) < 0) {
+                menor = valor;
             }
         }
         return menor;
     }
 
-    public Long max() {
-        Long maior = 0L;
+    public static BigDecimal max() {
+        BigDecimal maior = BigDecimal.ZERO;
         for (Map.Entry<Integer, TransacaoEntity> par : transacoes.entrySet()) {
-            if (maior < par.getValue().getValor()) {
-                maior = par.getValue().getValor();
+            BigDecimal valor = par.getValue().getValor();
+            if (maior == null || valor.compareTo(maior) > 0) {
+                maior = valor;
             }
         }
         return maior;
