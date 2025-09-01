@@ -1,21 +1,23 @@
 package com.alex.desafio_itau.dto;
 
+import java.math.BigDecimal;
+
 public class TransacaoRequestDTO {
 
-    private Long valor;
+    private BigDecimal valor;
     private String dataHora;
     private Integer id;
 
-    public TransacaoRequestDTO(Long valor, String dataHora) {
+    public TransacaoRequestDTO(BigDecimal valor, String dataHora) {
         this.valor = valor;
         this.dataHora = dataHora;
     }
 
-    public Long getValor() {
+    public BigDecimal getValor() {
         return valor;
     }
 
-    public void setValor(Long valor) {
+    public void setValor(BigDecimal valor) {
         this.valor = valor;
     }
 

@@ -1,14 +1,16 @@
 package com.alex.desafio_itau.dto;
 
+import java.math.BigDecimal;
+
 public class TransacaoResponseDTO {
 
     private int count;
-    private Long sum;
-    private Long avg;
-    private Long min;
-    private Long max;
+    private BigDecimal sum;
+    private BigDecimal avg;
+    private BigDecimal min;
+    private BigDecimal max;
 
-    public TransacaoResponseDTO(int count, Long sum, Long avg, Long min, Long max) {
+    public TransacaoResponseDTO(int count, BigDecimal sum, BigDecimal avg, BigDecimal min, BigDecimal max) {
         this.count = count;
         this.sum = sum;
         this.avg = avg;
@@ -24,35 +26,35 @@ public class TransacaoResponseDTO {
         this.count = count;
     }
 
-    public Long getSum() {
+    public BigDecimal getSum() {
         return sum;
     }
 
-    public void setSum(Long sum) {
+    public void setSum(BigDecimal sum) {
         this.sum = sum;
     }
 
-    public Long getAvg() {
+    public BigDecimal getAvg() {
         return avg;
     }
 
-    public void setAvg(Long avg) {
+    public void setAvg(BigDecimal avg) {
         this.avg = avg;
     }
 
-    public Long getMin() {
+    public BigDecimal getMin() {
         return min;
     }
 
-    public void setMin(Long min) {
+    public void setMin(BigDecimal min) {
         this.min = min;
     }
 
-    public Long getMax() {
+    public BigDecimal getMax() {
         return max;
     }
 
-    public void setMax(Long max) {
+    public void setMax(BigDecimal max) {
         this.max = max;
     }
 }

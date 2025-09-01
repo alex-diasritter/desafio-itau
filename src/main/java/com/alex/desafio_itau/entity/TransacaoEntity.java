@@ -1,23 +1,24 @@
 package com.alex.desafio_itau.entity;
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
 public class TransacaoEntity {
 
-    private Long valor;
+    private BigDecimal valor;
     private OffsetDateTime dataHora;
     private Integer id;
 
-    public TransacaoEntity(Long valor, OffsetDateTime dataHora, Integer id) {
+    public TransacaoEntity(BigDecimal valor, OffsetDateTime dataHora, Integer id) {
         this.valor = valor;
         this.dataHora = dataHora;
         this.id = id;
     }
 
-    public Long getValor() {
+    public BigDecimal getValor() {
         return valor;
     }
 
-    public void setValor(Long valor) {
+    public void setValor(BigDecimal valor) {
         this.valor = valor;
     }
 
