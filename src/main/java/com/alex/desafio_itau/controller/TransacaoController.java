@@ -2,6 +2,7 @@ package com.alex.desafio_itau.controller;
 import com.alex.desafio_itau.dto.TransacaoRequestDTO;
 import com.alex.desafio_itau.dto.TransacaoResponseDTO;
 import com.alex.desafio_itau.service.TransacaoService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +17,7 @@ public class TransacaoController {
     private TransacaoService service;
 
     @PostMapping("/transacao")
-    public ResponseEntity<Void> saveTransacao(@RequestBody TransacaoRequestDTO dto) {
+    public ResponseEntity<Void> saveTransacao(@RequestBody @Valid TransacaoRequestDTO dto) {
         service.saveTransfers(dto);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(dto.getId()).toUri();
         return ResponseEntity.created(uri).build();
