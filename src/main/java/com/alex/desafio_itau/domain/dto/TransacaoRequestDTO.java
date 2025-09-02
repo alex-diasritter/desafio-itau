@@ -1,4 +1,4 @@
-package com.alex.desafio_itau.dto;
+package com.alex.desafio_itau.domain.dto;
 import com.alex.desafio_itau.validation.DataHoraValida;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
