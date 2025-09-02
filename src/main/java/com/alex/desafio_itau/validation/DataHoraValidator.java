@@ -14,6 +14,5 @@ public class DataHoraValidator implements ConstraintValidator<DataHoraValida, St
             return false;
         }
         OffsetDateTime datetime = OffsetDateTime.parse(value);
-        Instant nowUtc = Instant.now();
-        return datetime.toInstant().toEpochMilli() < nowUtc.toEpochMilli();    }
+        return datetime.toInstant().toEpochMilli() < Instant.now().toEpochMilli();    }
 }
