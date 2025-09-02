@@ -1,83 +1,70 @@
 package com.alex.desafio_itau.service;
 import com.alex.desafio_itau.domain.dto.TransacaoRequestDTO;
 import com.alex.desafio_itau.domain.dto.TransacaoResponseDTO;
-import com.alex.desafio_itau.domain.entity.TransacaoEntity;
+import com.alex.desafio_itau.domain.entity.StatisticBucket;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.Instant;
 import java.time.OffsetDateTime;
-import java.util.Comparator;
-import java.util.List;
+import java.time.ZoneOffset;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class TransacaoService {
 
-    private static final Map<Integer, TransacaoEntity> transacoes = new ConcurrentHashMap<>();
-    private static final AtomicInteger idCounter = new AtomicInteger(0);
+    private static Map<Long, StatisticBucket> buckets = new ConcurrentHashMap<>();
 
-    public void saveTransfers(TransacaoRequestDTO dto) {
-        OffsetDateTime odt;
-        try {
-            odt = OffsetDateTime.parse(dto.getDataHora());
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Formato de dataHora inválido.");
-        }
+    public StatisticBucket saveTransfers(TransacaoRequestDTO dto) {
+        OffsetDateTime odt = OffsetDateTime.parse(dto.getDataHora());
+        long currentEpochSecond = OffsetDateTime.now(ZoneOffset.UTC).toEpochSecond();
+        long transactionEpochSecond = odt.toEpochSecond();
 
         if (odt.isAfter(OffsetDateTime.now().plusSeconds(5))) {
             throw new IllegalArgumentException("A dataHora da transação não pode estar no futuro.");
         }
 
-        int newId = idCounter.incrementAndGet();
-        dto.setId(newId);
+        BigDecimal valor = dto.getValor();
 
-        var entity = new TransacaoEntity(dto.getValor(), odt, dto.getId());
-        transacoes.put(newId, entity);
+        buckets.compute(transactionEpochSecond, (key, bucket) -> {
+            if (bucket == null) {
+                return new StatisticBucket(valor);
+            } else {
+                bucket.add(valor);
+                return bucket;
+            }
+        });
+        return null;
     }
 
     public void deleteAll() {
-        transacoes.clear();
-        idCounter.set(0);
+        buckets.clear();
     }
 
     public TransacaoResponseDTO getEstatisticas() {
-        final OffsetDateTime timeEnd = OffsetDateTime.now();
-        final OffsetDateTime timeStart = timeEnd.minusSeconds(60L);
+        long currentSecond = OffsetDateTime.now(ZoneOffset.UTC).toEpochSecond();
+        StatisticBucket finalStats = new StatisticBucket(BigDecimal.ZERO);
+        finalStats.sum = BigDecimal.ZERO;
+        finalStats.count = 0;
 
-        List<TransacaoEntity> transacoesNoIntervalo = transacoes.values().stream()
-                .filter(t -> {
-                    Instant instant = t.getDataHora().toInstant();
-                    return !instant.isBefore(timeStart.toInstant()) && !instant.isAfter(timeEnd.toInstant());
-                })
-                .toList();
+        // Itera sobre os últimos 60 segundos (janela de tempo)
+        for (int i = 0; i < 60; i++) {
+            long targetSecond = currentSecond - i;
+            StatisticBucket bucket = buckets.get(targetSecond);
+            if (bucket != null) {
+                finalStats.combine(bucket);
+            }
+        }
 
-        if (transacoesNoIntervalo.isEmpty()) {
+        if (finalStats.getCount() == 0) {
             return new TransacaoResponseDTO(0, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
         }
 
-        BigDecimal sum = transacoesNoIntervalo.stream()
-                .map(TransacaoEntity::getValor)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        BigDecimal avg = sum.divide(
-                BigDecimal.valueOf(transacoesNoIntervalo.size()),
-                2, // Boa prática definir a precisão
-                RoundingMode.HALF_UP
+        return new TransacaoResponseDTO(
+                (int) finalStats.getCount(),
+                finalStats.getSum(),
+                finalStats.getAvg(),
+                finalStats.getMin(),
+                finalStats.getMax()
         );
-
-        BigDecimal min = transacoesNoIntervalo.stream()
-                .map(TransacaoEntity::getValor)
-                .min(Comparator.naturalOrder())
-                .orElse(BigDecimal.ZERO);
-
-        BigDecimal max = transacoesNoIntervalo.stream()
-                .map(TransacaoEntity::getValor)
-                .max(Comparator.naturalOrder())
-                .orElse(BigDecimal.ZERO);
-
-        return new TransacaoResponseDTO(transacoesNoIntervalo.size(), sum, avg, min, max);
     }
 }
