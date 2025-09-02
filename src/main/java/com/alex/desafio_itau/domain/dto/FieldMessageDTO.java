@@ -1,4 +1,4 @@
-package com.alex.desafio_itau.dto;
+package com.alex.desafio_itau.domain.dto;
 public class FieldMessageDTO {
     private String fieldName;
     private String message;
