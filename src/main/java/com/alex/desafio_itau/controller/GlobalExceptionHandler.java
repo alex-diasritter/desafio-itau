@@ -1,6 +1,6 @@
 package com.alex.desafio_itau.controller;
-import com.alex.desafio_itau.dto.CustomErrorDTO;
-import com.alex.desafio_itau.dto.FieldMessageDTO;
+import com.alex.desafio_itau.domain.dto.CustomErrorDTO;
+import com.alex.desafio_itau.domain.dto.FieldMessageDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
