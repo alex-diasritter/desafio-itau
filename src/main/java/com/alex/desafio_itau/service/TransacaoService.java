@@ -1,6 +1,6 @@
 package com.alex.desafio_itau.service;
 import com.alex.desafio_itau.domain.dto.TransacaoRequestDTO;
-import com.alex.desafio_itau.domain.dto.TransacaoResponseDTO;
+import com.alex.desafio_itau.domain.dto.StatisticsResponseDTO;
 import com.alex.desafio_itau.domain.entity.StatisticBucket;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
@@ -40,7 +40,7 @@ public class TransacaoService {
         buckets.clear();
     }
 
-    public TransacaoResponseDTO getEstatisticas() {
+    public StatisticsResponseDTO getEstatisticas() {
         long currentSecond = OffsetDateTime.now(ZoneOffset.UTC).toEpochSecond();
         StatisticBucket finalStats = new StatisticBucket(BigDecimal.ZERO);
         finalStats.sum = BigDecimal.ZERO;
@@ -56,10 +56,10 @@ public class TransacaoService {
         }
 
         if (finalStats.getCount() == 0) {
-            return new TransacaoResponseDTO(0, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
+            return new StatisticsResponseDTO(0, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
         }
 
-        return new TransacaoResponseDTO(
+        return new StatisticsResponseDTO(
                 (int) finalStats.getCount(),
                 finalStats.getSum(),
                 finalStats.getAvg(),

@@ -1,6 +1,6 @@
 package com.alex.desafio_itau.controller;
 import com.alex.desafio_itau.domain.dto.TransacaoRequestDTO;
-import com.alex.desafio_itau.domain.dto.TransacaoResponseDTO;
+import com.alex.desafio_itau.domain.dto.StatisticsResponseDTO;
 import com.alex.desafio_itau.service.TransacaoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +29,8 @@ public class TransacaoController {
         return ResponseEntity.ok("Todas as informações foram apagadas com sucesso");
     }
 
-    @GetMapping("/estatisticas")
-    public ResponseEntity<TransacaoResponseDTO> estatistica(){
+    @GetMapping("/statistics")
+    public ResponseEntity<StatisticsResponseDTO> estatistica(){
         var dto = service.getEstatisticas();
         return ResponseEntity.ok(dto);
     }

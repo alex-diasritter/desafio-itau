@@ -2,7 +2,7 @@ package com.alex.desafio_itau.domain.dto;
 
 import java.math.BigDecimal;
 
-public class TransacaoResponseDTO {
+public class StatisticsResponseDTO {
 
     private int count;
     private BigDecimal sum;
@@ -10,7 +10,7 @@ public class TransacaoResponseDTO {
     private BigDecimal min;
     private BigDecimal max;
 
-    public TransacaoResponseDTO(int count, BigDecimal sum, BigDecimal avg, BigDecimal min, BigDecimal max) {
+    public StatisticsResponseDTO(int count, BigDecimal sum, BigDecimal avg, BigDecimal min, BigDecimal max) {
         this.count = count;
         this.sum = sum;
         this.avg = avg;
